@@ -15,8 +15,6 @@ bun.lock
 .cache
 
 # personal env
-.env
-config.js
 docker-push.sh
 docker-compose.yml
 turnserver.conf
