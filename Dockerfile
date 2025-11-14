@@ -1,4 +1,4 @@
-# Use a lightweight Node.js image https://hub.docker.com/_/node 
+# Use a lightweight Node.js image https://hub.docker.com/_/node
 FROM node:22-alpine
 
 # Set working directory
@@ -9,10 +9,10 @@ ENV NODE_ENV="production"
 
 # Copy package*.json and .env dependencies
 COPY package*.json ./
-COPY .env.template ./.env
+COPY .env .env
 
 # Rename config.template.js to config.js
-COPY ./app/src/config.template.js ./app/src/config.js
+COPY ./app/src/config.js ./app/src/config.js
 
 # Install necessary system packages and dependencies
 RUN apk add --no-cache \

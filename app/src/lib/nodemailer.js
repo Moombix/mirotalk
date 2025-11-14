@@ -15,7 +15,7 @@ const emailCfg = {
     send_to: process.env.EMAIL_SEND_TO,
     // Room join params
     https: process.env.HTTPS === 'true' || false,
-    server_port: process.env.PORT || 3000,
+    server_port: process.env.PORT || 3010,
 };
 
 const isTLSPort = emailCfg.port === 465; // 465 is the default TLS/SSL port
