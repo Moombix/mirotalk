@@ -1,9 +1,9 @@
 /*
  ██████ ██      ██ ███████ ███    ██ ████████ 
 ██      ██      ██ ██      ████   ██    ██    
-██      ██      ██ █████   ██ ██  ██    ██    
-██      ██      ██ ██      ██  ██ ██    ██    
- ██████ ███████ ██ ███████ ██   ████    ██   
+██      ██      ██ █████   ██ ██  ██    ██ 
+██      ██      ██ ██      ██  ██ ██    ██ 
+ ██████ ███████ ██ ███████ ██   ████    ██ 
 */
 
 /**
@@ -536,6 +536,7 @@ let notify = getNotify(); // popup room sharing on join
 let chat = getChat(); // popup chat on join
 let notifyBySound = true; // turn on - off sound notifications
 let isPeerReconnected = false;
+let isConnected = false;
 
 // media
 let useAudio = true; // User allow for microphone usage
@@ -1278,6 +1279,7 @@ async function handleConnect() {
         setupVideoUrlPlayer();
         handleDropdownHover();
         startSessionTime();
+        isConnected = true;
         await whoAreYou();
     }
 }
@@ -1550,7 +1552,8 @@ async function whoAreYou() {
 
     document.body.style.background = 'var(--body-bg)';
 
-    if (myPeerName) {
+    // we want to have the modal every time
+    /*if (myPeerName) {
         elemDisplay(loadingDiv, false);
 
         myPeerName = filterXSS(myPeerName);
@@ -1565,7 +1568,7 @@ async function whoAreYou() {
         whoAreYouJoin();
         playSound('addPeer');
         return;
-    }
+    }*/
 
     playSound('newMessage');
 
@@ -1632,7 +1635,7 @@ async function whoAreYou() {
         input: 'text',
         inputPlaceholder: 'Enter your email or name',
         inputAttributes: { maxlength: 254, id: 'usernameInput' },
-        inputValue: window.localStorage.peer_name ? window.localStorage.peer_name : '',
+        inputValue: myPeerName || (window.localStorage.peer_name ? window.localStorage.peer_name : ''),
         html: initUser, // inject html
         confirmButtonText: `Join meeting`,
         customClass: { popup: 'init-modal-size' },
@@ -2688,6 +2691,7 @@ function handleDisconnect(reason) {
     peerAudioMediaElements = {};
 
     isPeerReconnected = true;
+    isConnected = false;
 }
 
 /**
@@ -2995,14 +2999,14 @@ function setButtonsBarPosition(position) {
             setSP('--btns-margin-left', '0px');
             setSP('--btns-width', '40px');
             setSP('--btns-flex-direction', 'column');
-            // bottomButtons horizontally
-            setSP('--bottom-btns-top', 'auto');
-            setSP('--bottom-btns-left', '50%');
-            setSP('--bottom-btns-bottom', '0');
-            setSP('--bottom-btns-translate-X', '-50%');
-            setSP('--bottom-btns-translate-Y', '0%');
-            setSP('--bottom-btns-margin-bottom', '16px');
-            setSP('--bottom-btns-flex-direction', 'row');
+            // bottomButtons vertically
+            setSP('--bottom-btns-top', '50%');
+            setSP('--bottom-btns-left', '15px');
+            setSP('--bottom-btns-bottom', 'auto');
+            setSP('--bottom-btns-translate-X', '0%');
+            setSP('--bottom-btns-translate-Y', '-50%');
+            setSP('--bottom-btns-margin-bottom', '0');
+            setSP('--bottom-btns-flex-direction', 'column');
             break;
         case 'horizontal':
             // buttonsBar
@@ -3012,14 +3016,14 @@ function setButtonsBarPosition(position) {
             setSP('--btns-margin-left', '-260px');
             setSP('--btns-width', '520px');
             setSP('--btns-flex-direction', 'row');
-            // bottomButtons vertically
-            setSP('--bottom-btns-top', '50%');
-            setSP('--bottom-btns-left', '15px');
-            setSP('--bottom-btns-bottom', 'auto');
-            setSP('--bottom-btns-translate-X', '0%');
-            setSP('--bottom-btns-translate-Y', '-50%');
-            setSP('--bottom-btns-margin-bottom', '0');
-            setSP('--bottom-btns-flex-direction', 'column');
+            // bottomButtons horizontally
+            setSP('--bottom-btns-top', 'auto');
+            setSP('--bottom-btns-left', '50%');
+            setSP('--bottom-btns-bottom', '0');
+            setSP('--bottom-btns-translate-X', '-50%');
+            setSP('--bottom-btns-translate-Y', '0%');
+            setSP('--bottom-btns-margin-bottom', '16px');
+            setSP('--bottom-btns-flex-direction', 'row');
             break;
         default:
             console.log('No position found');
@@ -3326,7 +3330,7 @@ function handleMediaError(mediaType, err) {
     msgHTML(null, images.forbidden, 'Access denied', $html, 'center', '/');
 
     /*
-        it immediately stops the execution of the current function and jumps to the nearest enclosing try...catch block or, 
+        it immediately stops the execution of the current function and jumps to the nearest enclosing try...catch block or,
         if none exists, it interrupts the script execution and displays an error message in the console.
     */
     throw new Error(
@@ -7105,7 +7109,7 @@ async function shareRoomUrl() {
             /*
             This feature is available only in secure contexts (HTTPS),
             in some or all supporting browsers and mobile devices
-            console.error("navigator.share", err); 
+            console.error("navigator.share", err);
             */
             console.error('Navigator share error', err);
 
@@ -12365,8 +12369,15 @@ function showAbout() {
  * Leave the Room and create a new one
  */
 function leaveRoom() {
+    // we expect the parent application to listen to the exit button clicks and show an appropriate message
+    if (window.self === window.top) {
+        leave();
+    }
+}
+
+function leave() {
     checkRecording();
-    surveyActive ? leaveFeedback() : redirectOnLeave();
+    redirectOnLeave();
 }
 
 /**
@@ -13004,4 +13015,18 @@ function displayElements(elements) {
  */
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+class RoomClientInterface {
+    static isConnected() {
+        return isConnected;
+    }
+
+    static isScreenShared() {
+        return myScreenStatus;
+    }
+
+    static leaveRoom() {
+        leave();
+    }
 }

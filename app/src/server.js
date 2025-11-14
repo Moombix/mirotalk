@@ -1,7 +1,7 @@
 /*
 http://patorjk.com/software/taag/#p=display&f=ANSI%20Regular&t=Server
 
-███████ ███████ ██████  ██    ██ ███████ ██████  
+███████ ███████ ██████  ██    ██ ███████ ██████ 
 ██      ██      ██   ██ ██    ██ ██      ██   ██ 
 ███████ █████   ██████  ██    ██ █████   ██████  
      ██ ██      ██   ██  ██  ██  ██      ██   ██ 
@@ -58,6 +58,7 @@ const { Server } = require('socket.io');
 const httpolyglot = require('httpolyglot');
 const compression = require('compression');
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
@@ -82,8 +83,9 @@ const nodemailer = require('./lib/nodemailer');
 
 const packageJson = require('../../package.json');
 
-const port = process.env.PORT || 3000; // must be the same to client.js signalingServerPort
+const port = process.env.PORT || 3010; // must be the same to client.js signalingServerPort
 const host = process.env.HOST || `http://localhost:${port}`;
+const sslEnabled = process.env.SSL_ENABLED === "true";
 
 const authHost = new Host(); // Authenticated IP by Login
 
@@ -92,13 +94,13 @@ const keyPath = path.join(__dirname, '../ssl/key.pem');
 const certPath = path.join(__dirname, '../ssl/cert.pem');
 
 // Read SSL key and certificate files securely
-const options = {
+const options = sslEnabled ? {
     key: fs.readFileSync(keyPath, 'utf-8'),
     cert: fs.readFileSync(certPath, 'utf-8'),
-};
+} : {};
 
 // Server both http and https
-const server = httpolyglot.createServer(options, app);
+const server = sslEnabled ? httpolyglot.createServer(options, app) : http.createServer(app);
 
 // Trust Proxy
 const trustProxy = !!getEnvBoolean(process.env.TRUST_PROXY);
@@ -131,7 +133,7 @@ const corsOptions = {
     methods: corsMethods,
 };
 
-/*  
+/*
     Set maxHttpBufferSize from 1e6 (1MB) to 1e7 (10MB)
 */
 const io = new Server({
@@ -614,7 +616,7 @@ app.post('/isWidgetRoomActive', (req, res) => {
 app.get('/join/', async (req, res) => {
     if (Object.keys(req.query).length > 0) {
         log.debug('Request Query', req.query);
-        /* 
+        /*
             http://localhost:3000/join?room=test&name=mirotalk&audio=1&video=1&screen=0&chat=1&notify=0&hide=0
             https://p2p.mirotalk.com/join?room=test&name=mirotalk&audio=1&video=1&screen=0&chat=1&notify=0&hide=0
             https://mirotalk.up.railway.app/join?room=test&name=mirotalk&audio=1&video=1&screen=0&chat=1&notify=0&hide=0
