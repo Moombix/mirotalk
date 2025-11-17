@@ -8,7 +8,7 @@ module.exports = {
         htmlInjection: true,
         app: {
             language: 'en', // https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
-            name: 'MiroTalk',
+            name: 'Moombix',
             title: '<h1>MiroTalk</h1>Free browser based Real-time video calls.<br />Simple, Secure, Fast.',
             description:
                 'Start your next video call with a single click. No download, plug-in, or login is required. Just get straight to talking, messaging, and sharing your screen.',
@@ -18,7 +18,7 @@ module.exports = {
         },
         og: {
             type: 'app-webrtc',
-            siteName: 'MiroTalk',
+            siteName: 'Moombix',
             title: 'Click the link to make a call.',
             description:
                 'MiroTalk calling provides real-time HD quality and latency simply not available with traditional technology.',

@@ -14,10 +14,10 @@ class LocalStorage {
         };
 
         this.P2P_SETTINGS = {
-            share_on_join: true,
-            show_chat_on_msg: true,
+            share_on_join: false,
+            show_chat_on_msg: false,
             speech_in_msg: false,
-            mic_noise_suppression: true, // Noise suppression using RNNoise
+            mic_noise_suppression: false, // Noise suppression using RNNoise
             video_fps: 1, // default 30fps
             screen_fps: 1, // default 30fps
             pitch_bar: true,
@@ -133,5 +133,13 @@ class LocalStorage {
 
     getObjectLocalStorage(name) {
         return JSON.parse(localStorage.getItem(name));
+    }
+
+    resetDevicesCount() {
+        this.DEVICES_COUNT = {
+            audio: 0,
+            speaker: 0,
+            video: 0,
+        };
     }
 }
