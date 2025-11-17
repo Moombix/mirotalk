@@ -90,8 +90,8 @@
 
     /* video avatar img size */
     --vmi-wh: 15vw;
-    /* 
-        https://developer.mozilla.org/it/docs/Web/CSS/object-fit 
+    /*
+        https://developer.mozilla.org/it/docs/Web/CSS/object-fit
     */
     --video-object-fit: cover;
 }
@@ -853,7 +853,7 @@ button {
 }
 
 /*--------------------------------------------------------------
-# Chat Connected Peers 
+# Chat Connected Peers
 --------------------------------------------------------------*/
 
 #msgerCP {
@@ -1560,7 +1560,7 @@ button {
 }
 
 /* on open display devices tab */
-#tabRoom {
+#tabVideo {
     display: block;
 }
 
@@ -1709,7 +1709,7 @@ input:checked + .slider:before {
 }
 
 /*--------------------------------------------------------------
-# Fade in page on load 
+# Fade in page on load
 --------------------------------------------------------------*/
 
 .fadein {
@@ -2096,7 +2096,7 @@ hr {
 }
 
 /*--------------------------------------------------------------
-# Toggle button 
+# Toggle button
 # https://danklammer.com/articles/simple-css-toggle-switch/
 --------------------------------------------------------------*/
 
@@ -2327,7 +2327,7 @@ hr {
 z-index
 6 theme custom picker
 7 video avatar img
-8 video nav bar 
+8 video nav bar
 8 peer name
 9 speech bar
 10 left buttons
